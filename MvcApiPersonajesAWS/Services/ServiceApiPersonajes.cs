@@ -20,41 +20,56 @@ namespace MvcApiPersonajesAWS.Services
 
         public async Task<List<Personaje>> GetPersonajesAsync()
         {
-            using (HttpClient client = new HttpClient())
+            using (HttpClientHandler handler = new HttpClientHandler())
             {
-                string request = "api/personajes";
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Accept.Add(this.header);
-                HttpResponseMessage response = await client.GetAsync(this.UrlApi + request);
-                if (response.IsSuccessStatusCode)
+                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicies) =>
                 {
-                    List<Personaje> personajes = await response.Content.ReadAsAsync<List<Personaje>>();
-                    return personajes;
-                }
-                else
+                    return true;
+                };
+                using (HttpClient client = new HttpClient(handler))
                 {
-                    return null;
+                    string request = "api/personajes";
+                    client.DefaultRequestHeaders.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(this.header);
+                    HttpResponseMessage response = await client.GetAsync(this.UrlApi + request);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        List<Personaje> personajes = await response.Content.ReadAsAsync<List<Personaje>>();
+                        return personajes;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
             }
+            
         }
 
         public async Task CreatePersonajeAsync(string nombre, string imagen)
         {
-            using (HttpClient client = new HttpClient())
+            using (HttpClientHandler handler = new HttpClientHandler())
             {
-                string request = "api/personajes";
-                client.DefaultRequestHeaders.Clear();
-                client.DefaultRequestHeaders.Accept.Add(this.header);
-                Personaje personaje = new Personaje
+                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicies) =>
                 {
-                    IdPersonaje = 0,
-                    Nombre = nombre,
-                    Imagen = imagen
+                    return true;
                 };
-                string json = JsonConvert.SerializeObject(personaje);
-                StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await client.PostAsync(this.UrlApi + request, content);
-            }
+                using (HttpClient client = new HttpClient(handler))
+                {
+                    string request = "api/personajes";
+                    client.DefaultRequestHeaders.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(this.header);
+                    Personaje personaje = new Personaje
+                    {
+                        IdPersonaje = 0,
+                        Nombre = nombre,
+                        Imagen = imagen
+                    };
+                    string json = JsonConvert.SerializeObject(personaje);
+                    StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = await client.PostAsync(this.UrlApi + request, content);
+                }
+            }         
         }
     }
 }
