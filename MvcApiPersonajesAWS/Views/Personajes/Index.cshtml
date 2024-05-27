@@ -37,8 +37,8 @@
                 <img src="@Html.DisplayFor(modelItem => item.Imagen)" style="width:200px;height:200px" />
             </td>
             <td>
-                <a asp-controller="Personajes" asp-action="Create" class="btn btn-info">
-                    Create
+                    <a asp-controller="Personajes" asp-action="Update" asp-route-id="@item.IdPersonaje" class="btn btn-info">
+                    Update
                 </a>
             </td>
         </tr>

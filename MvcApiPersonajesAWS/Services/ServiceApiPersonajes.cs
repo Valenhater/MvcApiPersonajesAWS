@@ -28,7 +28,7 @@ namespace MvcApiPersonajesAWS.Services
                 };
                 using (HttpClient client = new HttpClient(handler))
                 {
-                    string request = "api/personajes";
+                    string request = "";
                     client.DefaultRequestHeaders.Clear();
                     client.DefaultRequestHeaders.Accept.Add(this.header);
                     HttpResponseMessage response = await client.GetAsync(this.UrlApi + request);
@@ -43,7 +43,7 @@ namespace MvcApiPersonajesAWS.Services
                     }
                 }
             }
-            
+
         }
 
         public async Task CreatePersonajeAsync(string nombre, string imagen)
@@ -56,7 +56,7 @@ namespace MvcApiPersonajesAWS.Services
                 };
                 using (HttpClient client = new HttpClient(handler))
                 {
-                    string request = "api/personajes";
+                    string request = "post";
                     client.DefaultRequestHeaders.Clear();
                     client.DefaultRequestHeaders.Accept.Add(this.header);
                     Personaje personaje = new Personaje
@@ -69,7 +69,33 @@ namespace MvcApiPersonajesAWS.Services
                     StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
                     HttpResponseMessage response = await client.PostAsync(this.UrlApi + request, content);
                 }
-            }         
+            }
         }
+        public async Task UpdatePersonajeAsync(int idPersonaje, string nombre, string imagen)
+        {
+            using (HttpClientHandler handler = new HttpClientHandler())
+            {
+                handler.ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicies) =>
+                {
+                    return true;
+                };
+                using (HttpClient client = new HttpClient(handler))
+                {
+                    string request = "put/" + idPersonaje;
+                    client.DefaultRequestHeaders.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(this.header);
+                    Personaje personaje = new Personaje
+                    {
+                        IdPersonaje = idPersonaje,
+                        Nombre = nombre,
+                        Imagen = imagen
+                    };
+                    string json = JsonConvert.SerializeObject(personaje);
+                    StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                    HttpResponseMessage response = await client.PutAsync(this.UrlApi + request, content);                  
+                }
+            }
+        }
+        
     }
 }

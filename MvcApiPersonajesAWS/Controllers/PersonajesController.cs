@@ -29,5 +29,16 @@ namespace MvcApiPersonajesAWS.Controllers
             await this.service.CreatePersonajeAsync(personaje.Nombre, personaje.Imagen);
             return RedirectToAction("Index");
         }
+        public async Task<IActionResult> Update()
+        {
+            return View();
+        }
+        [HttpPut]
+        public async Task<IActionResult> Update(Personaje personaje, int id)
+        {
+            id = personaje.IdPersonaje;
+            await this.service.UpdatePersonajeAsync(id, personaje.Nombre, personaje.Imagen);
+            return RedirectToAction("Index");
+        }
     }
 }
